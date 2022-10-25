@@ -1,0 +1,13 @@
+{
+  "name": "quarks/protoevent-amqp-php",
+  "version": "dev-master",
+  "autoload": {
+    "psr-4": {
+      "Quarks\\EventBus\\Transport\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^7.4|^8.0",
+    "ext-amqp": "^1.9.3"
+  }
+}
