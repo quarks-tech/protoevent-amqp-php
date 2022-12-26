@@ -1,5 +1,5 @@
 {
-  "name": "quarks/protoevent-amqp-php",
+  "name": "quarks-tech/protoevent-amqp-php",
   "version": "0.0.1",
   "autoload": {
     "psr-4": {
