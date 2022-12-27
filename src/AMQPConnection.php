@@ -7,7 +7,7 @@ class AMQPConnection
     private const DLX_SUFFIX = ".dlx";
 
     private \AMQPConnection $connection;
-    private \AMQPChannel $channel;
+    private ?\AMQPChannel $channel = null;
 
     /** @var array<\AMQPExchange> */
     private array $exchanges = [];
