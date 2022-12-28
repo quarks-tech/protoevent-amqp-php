@@ -30,10 +30,12 @@ class AMQPTransport implements TransportInterface, BlockingTransportInterface
      */
     public function publish(string $eventName, $body, array $options = []): void
     {
-        $exchangeName = substr($eventName, 0, strrpos($eventName, "."));
+        $dividerPos = strrpos($eventName, ".");
+        $exchange = substr($eventName, 0, $dividerPos);
+        $routingKey = substr($eventName, $dividerPos+1);
 
         try {
-            $this->connection->publish($body, $exchangeName, $eventName);
+            $this->connection->publish($body, $exchange, $routingKey);
         } catch (\AMQPException $exception) {
             throw new TransportException($exception->getMessage(), 0, $exception);
         }
