@@ -52,6 +52,10 @@ class AMQPTransport implements TransportInterface, BlockingTransportInterface
             throw new TransportException($exception->getMessage(), 0, $exception);
         }
 
+        if (null === $amqpEnvelope) {
+            return;
+        }
+
         yield new Message($amqpEnvelope->getBody(), [self::MARKER_AMQP_DELIVERY_TAG => $amqpEnvelope->getDeliveryTag()]);
     }
 

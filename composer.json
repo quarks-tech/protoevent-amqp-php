@@ -1,6 +1,6 @@
 {
   "name": "quarks-tech/protoevent-amqp-php",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "BSD-3-Clause",
   "autoload": {
     "psr-4": {
@@ -9,6 +9,7 @@
   },
   "require": {
     "php": "^7.4|^8.0",
-    "ext-amqp": "^1.9.3"
+    "ext-amqp": "*",
+    "quarks-tech/protoevent-php": "^1.0"
   }
 }

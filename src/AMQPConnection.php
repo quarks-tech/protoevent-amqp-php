@@ -90,9 +90,13 @@ class AMQPConnection
      * @throws \AMQPQueueException
      * @throws \AMQPException
      */
-    public function get(string $queueName): \AMQPEnvelope
+    public function get(string $queueName): ?\AMQPEnvelope
     {
-        return $this->queue($queueName)->get();
+        if (false !== $message = $this->queue($queueName)->get()) {
+            return $message;
+        }
+
+        return null;
     }
 
     /**
