@@ -35,7 +35,11 @@ class AMQPTransport implements TransportInterface, BlockingTransportInterface
         $routingKey = substr($eventName, $dividerPos+1);
 
         try {
-            $this->connection->publish($body, $exchange, $routingKey);
+            $this->connection->publish($body, $exchange, $routingKey, [
+                'delivery_mode' => 2,
+                'type' => $eventName,
+                'content_type' => 'application/cloudevents+json',
+            ]);
         } catch (\AMQPException $exception) {
             throw new TransportException($exception->getMessage(), 0, $exception);
         }

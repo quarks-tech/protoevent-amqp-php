@@ -36,9 +36,7 @@ class AMQPConnection
             $body,
             $routingKey,
             \AMQP_NOPARAM,
-            [
-                'content_type' => 'application/cloudevents+json',
-            ]
+            $headers
         );
     }
 
