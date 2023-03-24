@@ -30,13 +30,13 @@ class AMQPConnection
      * @throws \AMQPConnectionException
      * @throws \AMQPException
      */
-    public function publish(string $body, string $exchange, string $routingKey, array $headers = [], int $delayInMs = 0): void
+    public function publish(AMQPMessage $message, string $exchange, string $routingKey, int $delayInMs = 0): void
     {
         $this->exchange($exchange)->publish(
-            $body,
+            $message->getBody(),
             $routingKey,
-            \AMQP_NOPARAM,
-            $headers
+            $message->getFlags(),
+            $message->getAttributes()
         );
     }
 

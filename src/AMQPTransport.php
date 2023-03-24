@@ -2,14 +2,17 @@
 
 namespace Quarks\EventBus\Transport;
 
+use Quarks\EventBus\Envelope;
+use Quarks\EventBus\Exception\MessageEncodingFailedException;
 use Quarks\EventBus\Exception\TransportException;
-use Quarks\EventBus\Message;
+use Quarks\EventBus\Transport\Encoding\Encoder;
 
 class AMQPTransport implements TransportInterface, BlockingTransportInterface
 {
-    private const MARKER_AMQP_DELIVERY_TAG = 'amqp_delivery_tag';
+    public const MARKER_AMQP_DELIVERY_TAG = 'amqp_delivery_tag';
 
     private AMQPConnection $connection;
+    private Encoder $encoder;
 
     private array $receiverOptions = [
         'queue' => '',
@@ -23,23 +26,24 @@ class AMQPTransport implements TransportInterface, BlockingTransportInterface
     {
         $this->connection = $connection;
         $this->receiverOptions = array_replace_recursive($this->receiverOptions, $receiverOptions);
+
+        $this->encoder = new Encoder();
     }
 
     /**
      * @throws TransportException
+     * @throws MessageEncodingFailedException
      */
-    public function publish(string $eventName, $body, array $options = []): void
+    public function publish(Envelope $envelope, array $options = []): void
     {
-        $dividerPos = strrpos($eventName, ".");
-        $exchange = substr($eventName, 0, $dividerPos);
-        $routingKey = substr($eventName, $dividerPos+1);
+        $dividerPos = strrpos($envelope->getMetadata()->getType(), ".");
+        $exchange = substr($envelope->getMetadata()->getType(), 0, $dividerPos);
+        $routingKey = substr($envelope->getMetadata()->getType(), $dividerPos+1);
+
+        $amqpMessage = $this->encoder->encode($envelope);
 
         try {
-            $this->connection->publish($body, $exchange, $routingKey, [
-                'delivery_mode' => 2,
-                'type' => $eventName,
-                'content_type' => 'application/cloudevents+json',
-            ]);
+            $this->connection->publish($amqpMessage->getBody(), $exchange, $routingKey);
         } catch (\AMQPException $exception) {
             throw new TransportException($exception->getMessage(), 0, $exception);
         }
@@ -52,15 +56,16 @@ class AMQPTransport implements TransportInterface, BlockingTransportInterface
     {
         try {
             $amqpEnvelope = $this->connection->get($this->receiverOptions['queue']);
+
+            if (null === $amqpEnvelope) {
+                return;
+            }
+
+            yield $this->encoder->decode($amqpEnvelope);
+
         } catch (\AMQPException $exception) {
             throw new TransportException($exception->getMessage(), 0, $exception);
         }
-
-        if (null === $amqpEnvelope) {
-            return;
-        }
-
-        yield new Message($amqpEnvelope->getBody(), [self::MARKER_AMQP_DELIVERY_TAG => $amqpEnvelope->getDeliveryTag()]);
     }
 
     /**
@@ -72,21 +77,24 @@ class AMQPTransport implements TransportInterface, BlockingTransportInterface
     public function fetch(callable $fetcher)
     {
         $this->connection->fetch($this->receiverOptions['queue'], function (\AMQPEnvelope $amqpEnvelope, \AMQPQueue $queue) use ($fetcher) {
-            $fetcher(new Message($amqpEnvelope->getBody(), [self::MARKER_AMQP_DELIVERY_TAG => $amqpEnvelope->getDeliveryTag()]));
+            $envelope = $this->encoder->decode($amqpEnvelope);
+            $envelope->addMarker(self::MARKER_AMQP_DELIVERY_TAG, $amqpEnvelope->getDeliveryTag());
+
+            $fetcher($envelope);
         });
     }
 
     /**
      * @throws TransportException
      */
-    public function ack(Message $message): void
+    public function ack(Envelope $envelope): void
     {
-        if (empty($amqpEnvelop = $message->getMarker(self::MARKER_AMQP_DELIVERY_TAG))) {
+        if (empty($deliveryTag = $envelope->getMarker(self::MARKER_AMQP_DELIVERY_TAG))) {
             throw new \LogicException('Missing marker');
         }
 
         try {
-            $this->connection->ack($this->receiverOptions['queue'], $amqpEnvelop);
+            $this->connection->ack($this->receiverOptions['queue'], $deliveryTag);
         } catch (\AMQPException $exception) {
             throw new TransportException($exception->getMessage(), 0, $exception);
         }
@@ -95,14 +103,14 @@ class AMQPTransport implements TransportInterface, BlockingTransportInterface
     /**
      * @throws TransportException
      */
-    public function reject(Message $message, bool $requeue = false): void
+    public function reject(Envelope $envelope, bool $requeue = false): void
     {
-        if (empty($amqpEnvelop = $message->getMarker(self::MARKER_AMQP_DELIVERY_TAG))) {
+        if (empty($deliveryTag = $envelope->getMarker(self::MARKER_AMQP_DELIVERY_TAG))) {
             throw new \LogicException('Missing marker');
         }
 
         try {
-            $this->connection->nack($this->receiverOptions['queue'], $amqpEnvelop);
+            $this->connection->nack($this->receiverOptions['queue'], $deliveryTag);
         } catch (\AMQPException $exception) {
             throw new TransportException($exception->getMessage(), 0, $exception);
         }

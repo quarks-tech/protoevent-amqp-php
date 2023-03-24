@@ -1,15 +1,28 @@
 {
   "name": "quarks-tech/protoevent-amqp-php",
-  "version": "1.0.5",
+  "version": "0.0.2",
   "license": "BSD-3-Clause",
   "autoload": {
     "psr-4": {
-      "Quarks\\EventBus\\Transport\\": "src/"
+      "Quarks\\EventBus\\Transport\\": "src/",
+      "Quarks\\Tests\\": "tests/"
     }
   },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "/home/ronder/PhpstormProjects/protoevent-php",
+      "options": {
+        "symlink": true
+      }
+    }
+  ],
   "require": {
-    "php": "^7.4|^8.0",
+    "php": ">=8",
     "ext-amqp": "*",
-    "quarks-tech/protoevent-php": "^1.0"
+    "quarks-tech/protoevent-php": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9"
   }
 }
