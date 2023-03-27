@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7d7e087d19805f6820b53e0b1a5f280e",
+    "content-hash": "3436f2740f4aa50d9396ef81310fdaf6",
     "packages": [
         {
             "name": "brick/math",
@@ -64,16 +64,16 @@
         },
         {
             "name": "google/protobuf",
-            "version": "v3.21.12",
+            "version": "v3.22.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/protocolbuffers/protobuf-php.git",
-                "reference": "93019df2df0f8c5c01757ef79f3f077d2cb35b65"
+                "reference": "ff28a64946708e13f2be627b5e5561f247ecf95c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/93019df2df0f8c5c01757ef79f3f077d2cb35b65",
-                "reference": "93019df2df0f8c5c01757ef79f3f077d2cb35b65",
+                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/ff28a64946708e13f2be627b5e5561f247ecf95c",
+                "reference": "ff28a64946708e13f2be627b5e5561f247ecf95c",
                 "shasum": ""
             },
             "require": {
@@ -102,9 +102,9 @@
                 "proto"
             ],
             "support": {
-                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v3.21.12"
+                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v3.22.2"
             },
-            "time": "2022-12-14T14:50:49+00:00"
+            "time": "2023-03-10T17:52:03+00:00"
         },
         {
             "name": "protobuf-php/google-protobuf-proto",
@@ -281,11 +281,17 @@
         },
         {
             "name": "quarks-tech/protoevent-php",
-            "version": "dev-master",
+            "version": "0.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/quarks-tech/protoevent-php.git",
+                "reference": "237ed53700cc8c9b581be42d789ff774aba963e6"
+            },
             "dist": {
-                "type": "path",
-                "url": "/home/ronder/PhpstormProjects/protoevent-php",
-                "reference": "3b373e26222f642fe32ba1887cf2b4a45e81a153"
+                "type": "zip",
+                "url": "https://api.github.com/repos/quarks-tech/protoevent-php/zipball/237ed53700cc8c9b581be42d789ff774aba963e6",
+                "reference": "237ed53700cc8c9b581be42d789ff774aba963e6",
+                "shasum": ""
             },
             "require": {
                 "ext-pcntl": "*",
@@ -294,7 +300,6 @@
                 "protobuf-php/google-protobuf-proto": "^0.1.3",
                 "protobuf-php/protobuf": "^0.1.3",
                 "psr/log": "^1|^2|^3",
-                "quarks-tech/protoevent-amqp-php": "dev-master",
                 "ramsey/uuid": "^4.5"
             },
             "require-dev": {
@@ -311,17 +316,19 @@
             "autoload": {
                 "psr-4": {
                     "Quarks\\": "src/",
-                    "Quarks\\Tests\\": "tests/",
-                    "Example\\": "demo/gen/Example"
+                    "Example\\": "demo/gen/Example",
+                    "Quarks\\Tests\\": "tests/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
-            "transport-options": {
-                "symlink": true,
-                "relative": false
-            }
+            "support": {
+                "issues": "https://github.com/quarks-tech/protoevent-php/issues",
+                "source": "https://github.com/quarks-tech/protoevent-php/tree/0.0.2"
+            },
+            "time": "2023-03-27T08:28:56+00:00"
         },
         {
             "name": "ramsey/collection",
@@ -414,16 +421,16 @@
         },
         {
             "name": "ramsey/uuid",
-            "version": "4.7.1",
+            "version": "4.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "a1acf96007170234a8399586a6e2ab8feba109d1"
+                "reference": "433b2014e3979047db08a17a205f410ba3869cf2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/a1acf96007170234a8399586a6e2ab8feba109d1",
-                "reference": "a1acf96007170234a8399586a6e2ab8feba109d1",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/433b2014e3979047db08a17a205f410ba3869cf2",
+                "reference": "433b2014e3979047db08a17a205f410ba3869cf2",
                 "shasum": ""
             },
             "require": {
@@ -490,7 +497,7 @@
             ],
             "support": {
                 "issues": "https://github.com/ramsey/uuid/issues",
-                "source": "https://github.com/ramsey/uuid/tree/4.7.1"
+                "source": "https://github.com/ramsey/uuid/tree/4.7.3"
             },
             "funding": [
                 {
@@ -502,7 +509,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-12-31T22:20:34+00:00"
+            "time": "2023-01-12T18:13:24+00:00"
         }
     ],
     "packages-dev": [
@@ -2239,9 +2246,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "quarks-tech/protoevent-php": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

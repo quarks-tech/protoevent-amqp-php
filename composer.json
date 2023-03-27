@@ -8,19 +8,10 @@
       "Quarks\\Tests\\": "tests/"
     }
   },
-  "repositories": [
-    {
-      "type": "path",
-      "url": "/home/ronder/PhpstormProjects/protoevent-php",
-      "options": {
-        "symlink": true
-      }
-    }
-  ],
   "require": {
     "php": ">=8",
     "ext-amqp": "*",
-    "quarks-tech/protoevent-php": "dev-master"
+    "quarks-tech/protoevent-php": "0.0.2"
   },
   "require-dev": {
     "phpunit/phpunit": "^9"
