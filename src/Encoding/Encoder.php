@@ -2,14 +2,13 @@
 
 namespace Quarks\EventBus\Transport\Encoding;
 
+use Quarks\EventBus\ContentTypeHelper;
 use Quarks\EventBus\Envelope;
 use Quarks\EventBus\Exception\MessageEncodingFailedException;
 use Quarks\EventBus\Transport\AMQPMessage;
 
 class Encoder
 {
-    private const structuredContentType = 'application/cloudevents+json';
-
     private BinaryEncoder $binaryEncoder;
     private StructuredEncoder $structuredEncoder;
 
@@ -24,7 +23,7 @@ class Encoder
      */
     public function encode(Envelope $envelope): AMQPMessage
     {
-        if ($envelope->getMetadata()->getDataContentType() === self::structuredContentType) {
+        if ($envelope->getMetadata()->getDataContentType() === ContentTypeHelper::CLOUDEVENTS_CONTENT_TYPE_JSON) {
             return $this->structuredEncoder->encode($envelope);
         }
 
@@ -33,7 +32,7 @@ class Encoder
 
     public function decode(\AMQPEnvelope $AMQPEnvelope): Envelope
     {
-        if ($AMQPEnvelope->getContentType() === self::structuredContentType) {
+        if ($AMQPEnvelope->getContentType() === ContentTypeHelper::CLOUDEVENTS_CONTENT_TYPE_JSON) {
             return $this->structuredEncoder->decode($AMQPEnvelope);
         }
 

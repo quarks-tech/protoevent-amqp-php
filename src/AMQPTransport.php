@@ -43,7 +43,7 @@ class AMQPTransport implements TransportInterface, BlockingTransportInterface
         $amqpMessage = $this->encoder->encode($envelope);
 
         try {
-            $this->connection->publish($amqpMessage->getBody(), $exchange, $routingKey);
+            $this->connection->publish($amqpMessage, $exchange, $routingKey);
         } catch (\AMQPException $exception) {
             throw new TransportException($exception->getMessage(), 0, $exception);
         }
