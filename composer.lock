@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3436f2740f4aa50d9396ef81310fdaf6",
+    "content-hash": "48ab9f8e3414e8cc1411796c36a14faf",
     "packages": [
         {
             "name": "brick/math",
@@ -281,16 +281,16 @@
         },
         {
             "name": "quarks-tech/protoevent-php",
-            "version": "0.0.2",
+            "version": "0.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/quarks-tech/protoevent-php.git",
-                "reference": "237ed53700cc8c9b581be42d789ff774aba963e6"
+                "reference": "8c791cb38912de51dce1e8c70a29aeb5f0276de5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/quarks-tech/protoevent-php/zipball/237ed53700cc8c9b581be42d789ff774aba963e6",
-                "reference": "237ed53700cc8c9b581be42d789ff774aba963e6",
+                "url": "https://api.github.com/repos/quarks-tech/protoevent-php/zipball/8c791cb38912de51dce1e8c70a29aeb5f0276de5",
+                "reference": "8c791cb38912de51dce1e8c70a29aeb5f0276de5",
                 "shasum": ""
             },
             "require": {
@@ -326,9 +326,9 @@
             ],
             "support": {
                 "issues": "https://github.com/quarks-tech/protoevent-php/issues",
-                "source": "https://github.com/quarks-tech/protoevent-php/tree/0.0.2"
+                "source": "https://github.com/quarks-tech/protoevent-php/tree/0.0.3"
             },
-            "time": "2023-03-27T08:28:56+00:00"
+            "time": "2023-08-07T09:43:08+00:00"
         },
         {
             "name": "ramsey/collection",
