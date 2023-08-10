@@ -66,10 +66,10 @@ class StructuredEncoder
                 ->setDataScheme($bodyDecoded->dataschema ?? '')
                 ->setDataContentType($bodyDecoded->datacontenttype ?? '');
 
-            $extensions = array_diff(array_keys($bodyDecoded), $this->knownKeys);
-
-            foreach ($extensions as $name) {
-                $metadata->addExtension($name, $bodyDecoded->$name);
+            foreach ($bodyDecoded as $key => $value) {
+                if (!in_array($key, $this->knownKeys)) {
+                    $metadata->addExtension($key, $value);
+                }
             }
 
             if ($metadata->getDataContentType() == ContentTypeHelper::CLOUDEVENTS_CONTENT_TYPE_JSON) {
