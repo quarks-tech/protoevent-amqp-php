@@ -78,7 +78,7 @@ class StructuredEncoder
 
             if ($metadata->getDataContentType() == ContentTypeHelper::CLOUDEVENTS_CONTENT_TYPE_JSON) {
                 // dirty hack
-                $body = json_encode($bodyDecoded['data'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
+                $body = json_encode($bodyDecoded['data'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT);
             }
 
             return new Envelope(
