@@ -47,43 +47,39 @@ class StructuredEncoder
     public function decode(\AMQPEnvelope $AMQPEnvelope): Envelope
     {
         try {
-            $bodyDecoded = json_decode($AMQPEnvelope->getBody(), true, flags: JSON_THROW_ON_ERROR);
+            $bodyDecoded = json_decode($AMQPEnvelope->getBody(), false, flags: JSON_THROW_ON_ERROR);
 
-            if (!is_array($bodyDecoded)) {
-                throw new MessageDecodingFailedException();
-            }
-
-            if (\DateTime::createFromFormat(\DateTimeInterface::RFC3339, $bodyDecoded['time']) === false) {
+            if (\DateTime::createFromFormat(\DateTimeInterface::RFC3339, $bodyDecoded->time) === false) {
                 throw new MessageDecodingFailedException();
             }
 
             $metadata = new Metadata(
-                $bodyDecoded['specversion'],
-                $bodyDecoded['type'],
-                $bodyDecoded['source'],
-                $bodyDecoded['id'],
-                $bodyDecoded['time'],
+                $bodyDecoded->specversion,
+                $bodyDecoded->type,
+                $bodyDecoded->source,
+                $bodyDecoded->id,
+                $bodyDecoded->time,
             );
 
             $metadata
-                ->setSubject($bodyDecoded['subject'] ?? '')
-                ->setDataScheme($bodyDecoded['dataschema'] ?? '')
-                ->setDataContentType($bodyDecoded['datacontenttype'] ?? '');
+                ->setSubject($bodyDecoded->subject ?? '')
+                ->setDataScheme($bodyDecoded->dataschema ?? '')
+                ->setDataContentType($bodyDecoded->datacontenttype ?? '');
 
             $extensions = array_diff(array_keys($bodyDecoded), $this->knownKeys);
 
             foreach ($extensions as $name) {
-                $metadata->addExtension($name, $bodyDecoded[$name]);
+                $metadata->addExtension($name, $bodyDecoded->$name);
             }
 
             if ($metadata->getDataContentType() == ContentTypeHelper::CLOUDEVENTS_CONTENT_TYPE_JSON) {
                 // dirty hack
-                $body = json_encode($bodyDecoded['data'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_FORCE_OBJECT);
+                $body = json_encode($bodyDecoded->data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
             }
 
             return new Envelope(
                 $metadata,
-                $body ?? $bodyDecoded['data'],
+                $body ?? $bodyDecoded->data,
                 [AMQPTransport::MARKER_AMQP_DELIVERY_TAG => $AMQPEnvelope->getDeliveryTag()]
             );
         } catch (\Exception $exception) {
