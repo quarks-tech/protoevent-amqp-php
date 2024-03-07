@@ -10,6 +10,7 @@ use Quarks\EventBus\Transport\Encoding\Encoder;
 class AMQPTransport implements TransportInterface, BlockingTransportInterface
 {
     public const MARKER_AMQP_DELIVERY_TAG = 'amqp_delivery_tag';
+    public const MAX_RETRIES = 3;
 
     private AMQPConnection $connection;
     private Encoder $encoder;
@@ -79,6 +80,7 @@ class AMQPTransport implements TransportInterface, BlockingTransportInterface
         $this->connection->fetch($this->receiverOptions['queue'], function (\AMQPEnvelope $amqpEnvelope, \AMQPQueue $queue) use ($fetcher) {
             $envelope = $this->encoder->decode($amqpEnvelope);
             $envelope->addMarker(self::MARKER_AMQP_DELIVERY_TAG, $amqpEnvelope->getDeliveryTag());
+            $envelope->setHeaders($amqpEnvelope->getHeaders());
 
             $fetcher($envelope);
         });
@@ -100,6 +102,22 @@ class AMQPTransport implements TransportInterface, BlockingTransportInterface
         }
     }
 
+    private function hasExceededRetryCount(Envelope $envelope): bool
+    {
+        $headers = $envelope->getHeaders();
+        $deaths = $headers['x-death'] ?? [];
+
+        if (is_array($deaths)) {
+            foreach ($deaths as $death) {
+                if ($death['queue'] === $envelope->getMarker('x-first-death-queue')) {
+                    return $death['count'] >= self::MAX_RETRIES;
+                }
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @throws TransportException
      */
@@ -109,8 +127,35 @@ class AMQPTransport implements TransportInterface, BlockingTransportInterface
             throw new \LogicException('Missing marker');
         }
 
+        if (!$requeue) {
+            $this->putIntoParkingLot($envelope);
+
+            return;
+        }
+
+        if ($this->hasExceededRetryCount($envelope)) {
+            $this->putIntoParkingLot($envelope);
+
+            return;
+        }
+
         try {
             $this->connection->nack($this->receiverOptions['queue'], $deliveryTag);
+        } catch (\AMQPException $exception) {
+            throw new TransportException($exception->getMessage(), 0, $exception);
+        }
+    }
+
+    private function putIntoParkingLot(Envelope $envelope): void
+    {
+        $deliveryTag = $envelope->getMarker(self::MARKER_AMQP_DELIVERY_TAG);
+        $dlxExchange = $this->receiverOptions['queue'] . AMQPConnection::DLX_SUFFIX;
+
+        $amqpMessage = $this->encoder->encode($envelope);
+
+        try {
+            $this->connection->publish($amqpMessage, $dlxExchange, AMQPConnection::PARKING_LOT_ROUTING_KEY);
+            $this->connection->ack($this->receiverOptions['queue'], $deliveryTag);
         } catch (\AMQPException $exception) {
             throw new TransportException($exception->getMessage(), 0, $exception);
         }

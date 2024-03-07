@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f31937127e5ff80795df77ea5e91c0a0",
+    "content-hash": "560efc32fb70fa5edf09919020a1031e",
     "packages": [
         {
             "name": "brick/math",
@@ -281,22 +281,23 @@
         },
         {
             "name": "quarks-tech/protoevent-php",
-            "version": "0.0.4",
+            "version": "dev-PAY-4500",
             "source": {
                 "type": "git",
                 "url": "https://github.com/quarks-tech/protoevent-php.git",
-                "reference": "1dae2f79a4d5675f05529b788f3daa3c47a692dc"
+                "reference": "887441932e53177392a6e38cb02c007b9ea1dd77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/quarks-tech/protoevent-php/zipball/1dae2f79a4d5675f05529b788f3daa3c47a692dc",
-                "reference": "1dae2f79a4d5675f05529b788f3daa3c47a692dc",
+                "url": "https://api.github.com/repos/quarks-tech/protoevent-php/zipball/887441932e53177392a6e38cb02c007b9ea1dd77",
+                "reference": "887441932e53177392a6e38cb02c007b9ea1dd77",
                 "shasum": ""
             },
             "require": {
+                "ext-amqp": "*",
                 "ext-pcntl": "*",
                 "google/protobuf": "^3.21",
-                "php": ">=8",
+                "php": ">=8.1",
                 "protobuf-php/google-protobuf-proto": "^0.1.3",
                 "protobuf-php/protobuf": "^0.1.3",
                 "psr/log": "^1|^2|^3",
@@ -305,7 +306,9 @@
             "require-dev": {
                 "laminas/laminas-code": "^4.7",
                 "phpunit/phpunit": "^9",
+                "quarks-tech/protoevent-amqp-php": "^0.0.8",
                 "seld/phar-utils": "^1.2",
+                "symfony/event-dispatcher": "^6.4",
                 "symfony/finder": "^6.1",
                 "vimeo/psalm": "^4.27"
             },
@@ -317,6 +320,7 @@
                 "psr-4": {
                     "Quarks\\": "src/",
                     "Example\\": "demo/gen/Example",
+                    "GPBMetadata\\": "demo/gen/GPBMetadata",
                     "Quarks\\Tests\\": "tests/"
                 }
             },
@@ -326,9 +330,9 @@
             ],
             "support": {
                 "issues": "https://github.com/quarks-tech/protoevent-php/issues",
-                "source": "https://github.com/quarks-tech/protoevent-php/tree/0.0.4"
+                "source": "https://github.com/quarks-tech/protoevent-php/tree/PAY-4500"
             },
-            "time": "2023-08-07T10:21:36+00:00"
+            "time": "2024-03-07T10:52:53+00:00"
         },
         {
             "name": "ramsey/collection",
@@ -2246,7 +2250,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "quarks-tech/protoevent-php": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

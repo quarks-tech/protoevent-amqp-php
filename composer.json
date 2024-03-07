@@ -11,7 +11,7 @@
   "require": {
     "php": ">=8",
     "ext-amqp": "*",
-    "quarks-tech/protoevent-php": "0.0.*"
+    "quarks-tech/protoevent-php": "dev-PAY-4500"
   },
   "require-dev": {
     "phpunit/phpunit": "^9"
