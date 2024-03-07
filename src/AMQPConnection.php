@@ -10,7 +10,7 @@ class AMQPConnection
     public const RETRY_ROUTING_KEY = 'retry';
     public const WAIT_ROUTING_KEY = 'wait';
     public const PARKING_LOT_ROUTING_KEY = 'parkinglot';
-    public const MIN_RETRY_BACKOFF_TTL = 15;
+    public const MIN_RETRY_BACKOFF_TTL = 15000;
     public const MAX_RETRIES = 3;
 
     private \AMQPConnection $connection;
