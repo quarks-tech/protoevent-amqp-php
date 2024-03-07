@@ -109,7 +109,7 @@ class AMQPTransport implements TransportInterface, BlockingTransportInterface
 
         if (is_array($deaths)) {
             foreach ($deaths as $death) {
-                if ($death['queue'] === $envelope->getMarker('x-first-death-queue')) {
+                if ($death['queue'] === $headers['x-first-death-queue']) {
                     return $death['count'] >= self::MAX_RETRIES;
                 }
             }
@@ -171,10 +171,11 @@ class AMQPTransport implements TransportInterface, BlockingTransportInterface
         }
 
         try {
+            //@TODO add enableParkingLot
             $this->connection->setup(
                 $registeredEvents,
                 $this->receiverOptions['enableDLX'],
-                $this->receiverOptions['queue']
+                $this->receiverOptions['queue'],
             );
         } catch (\AMQPException $exception) {
             throw new TransportException($exception->getMessage(), 0, $exception);
