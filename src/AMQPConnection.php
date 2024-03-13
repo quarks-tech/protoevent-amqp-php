@@ -4,14 +4,7 @@ namespace Quarks\EventBus\Transport;
 
 class AMQPConnection
 {
-    public const DLX_SUFFIX = '.dlx';
-    public const WAIT_SUFFIX = '.wait';
-    public const PARKING_LOT_SUFFIX = '.pl';
-    public const RETRY_ROUTING_KEY = 'retry';
-    public const WAIT_ROUTING_KEY = 'wait';
-    public const PARKING_LOT_ROUTING_KEY = 'parkinglot';
-    public const MIN_RETRY_BACKOFF_TTL = 15000;
-    public const MAX_RETRIES = 3;
+    private const DLX_SUFFIX = ".dlx";
 
     private \AMQPConnection $connection;
     private ?\AMQPChannel $channel = null;
@@ -56,53 +49,28 @@ class AMQPConnection
      */
     public function setup(array $registeredEvents, bool $withDLX, string $queueName): void
     {
-        $dlxExchange = $queueName . self::DLX_SUFFIX;
-        $waitQueue = $queueName . self::WAIT_SUFFIX;
-        $parkingLogQueue = $queueName . self::PARKING_LOT_SUFFIX;
+        $queueArguments = [];
 
         if ($withDLX) {
-            $this->setupTopology(
-                $dlxExchange,
-                $waitQueue,
-                $parkingLogQueue,
-                $queueName,
-            );
+            $dlxExchange = $queueName . self::DLX_SUFFIX;
+            $dlxQueue = $queueName . self::DLX_SUFFIX;
+
+            $queueArguments['x-dead-letter-exchange'] = $dlxExchange;
+
+            $this->exchange($dlxExchange)->declareExchange();
+            $this->queue($dlxQueue)->declareQueue();
+
+            $this->queue($dlxQueue)->bind($dlxExchange);
         }
 
-        $this->setupBindings($registeredEvents, $queueName);
-    }
+        $this->queue($queueName, $queueArguments)->declareQueue();
 
+        foreach ($registeredEvents as $eventFullName => $eventClassName) {
+            $exchangeName = substr($eventFullName, 0, strrpos($eventFullName, "."));
+            $eventName = substr(strrchr($eventFullName, "."), 1);
 
-    private function setupBindings(array $registeredEvents, string $incomingQueue): void
-    {
-        foreach ($registeredEvents as $eventPathReference => $eventClass) {
-            $exchangeName = substr($eventPathReference, 0, strrpos($eventPathReference, "."));
-            $eventName = substr(strrchr($eventPathReference, "."), 1);
-
-            $this->queue($incomingQueue)->bind($exchangeName, $eventName);
+            $this->queue($queueName)->bind($exchangeName, $eventName);
         }
-    }
-
-    private function setupTopology(string $dlxExchange, string $waitQueue, string $parkingLotQueue, string $incomingQueue): void
-    {
-        $this->exchange($dlxExchange, \AMQP_EX_TYPE_TOPIC)->declareExchange();
-
-        $this->queue($waitQueue, [
-            'x-dead-letter-exchange' => $dlxExchange,
-            'x-dead-letter-routing-key' => self::RETRY_ROUTING_KEY,
-            'x-message-ttl' => self::MIN_RETRY_BACKOFF_TTL,
-        ])->declareQueue();
-
-        $this->queue($parkingLotQueue)->declareQueue();
-
-        $this->queue($incomingQueue, [
-            'x-dead-letter-exchange' => $dlxExchange,
-            'x-dead-letter-routing-key' => self::WAIT_ROUTING_KEY,
-        ])->declareQueue();
-
-        $this->queue($waitQueue)->bind($dlxExchange, self::WAIT_ROUTING_KEY);
-        $this->queue($incomingQueue)->bind($dlxExchange, self::RETRY_ROUTING_KEY);
-        $this->queue($parkingLotQueue)->bind($dlxExchange, self::PARKING_LOT_ROUTING_KEY);
     }
 
     /**
@@ -157,12 +125,12 @@ class AMQPConnection
      * @throws \AMQPException
      * @throws \AMQPConnectionException
      */
-    private function exchange(string $name, string $type = AMQP_EX_TYPE_FANOUT): \AMQPExchange
+    private function exchange(string $name): \AMQPExchange
     {
         if (!isset($this->exchanges[$name])) {
             $exchange = new \AMQPExchange($this->channel());
             $exchange->setName($name);
-            $exchange->setType($type);
+            $exchange->setType(\AMQP_EX_TYPE_FANOUT);
             $exchange->setFlags(\AMQP_DURABLE);
 
             $this->exchanges[$name] = $exchange;
@@ -196,7 +164,7 @@ class AMQPConnection
      * @throws \AMQPException
      * @throws \AMQPConnectionException
      */
-    public function ack(string $queue, string $deliveryTag): bool
+    public function ack(string $queue,string $deliveryTag): bool
     {
         return $this->queue($queue)->ack($deliveryTag);
     }
