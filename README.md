@@ -13,7 +13,7 @@
 3. **Update the `demo/config.php` file**: make sure these credentials match with your local rabbitmq setup
     ```bash
     'rabbitmq' => [
-        'host' => 'localhost',
+        'host' => getenv('DOCKER_INTERNAL_HOST'),
         'port' => '5672',
         'vhost' => '/',
         'login' => 'guest',
