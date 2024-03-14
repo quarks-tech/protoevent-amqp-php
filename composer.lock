@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "560efc32fb70fa5edf09919020a1031e",
+    "content-hash": "dcd791400ee064c8093541bc43012c57",
     "packages": [
         {
             "name": "brick/math",
@@ -281,23 +281,23 @@
         },
         {
             "name": "quarks-tech/protoevent-php",
-            "version": "dev-PAY-4500",
+            "version": "0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/quarks-tech/protoevent-php.git",
-                "reference": "887441932e53177392a6e38cb02c007b9ea1dd77"
+                "reference": "a79ad2c90a1f0d1e097d36f2e565753b57e5c78c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/quarks-tech/protoevent-php/zipball/887441932e53177392a6e38cb02c007b9ea1dd77",
-                "reference": "887441932e53177392a6e38cb02c007b9ea1dd77",
+                "url": "https://api.github.com/repos/quarks-tech/protoevent-php/zipball/a79ad2c90a1f0d1e097d36f2e565753b57e5c78c",
+                "reference": "a79ad2c90a1f0d1e097d36f2e565753b57e5c78c",
                 "shasum": ""
             },
             "require": {
-                "ext-amqp": "*",
+                "ext-bcmath": "*",
                 "ext-pcntl": "*",
                 "google/protobuf": "^3.21",
-                "php": ">=8.1",
+                "php": ">=8",
                 "protobuf-php/google-protobuf-proto": "^0.1.3",
                 "protobuf-php/protobuf": "^0.1.3",
                 "psr/log": "^1|^2|^3",
@@ -306,9 +306,8 @@
             "require-dev": {
                 "laminas/laminas-code": "^4.7",
                 "phpunit/phpunit": "^9",
-                "quarks-tech/protoevent-amqp-php": "^0.0.8",
                 "seld/phar-utils": "^1.2",
-                "symfony/event-dispatcher": "^6.4",
+                "symfony/event-dispatcher": "^7.0",
                 "symfony/finder": "^6.1",
                 "vimeo/psalm": "^4.27"
             },
@@ -330,9 +329,9 @@
             ],
             "support": {
                 "issues": "https://github.com/quarks-tech/protoevent-php/issues",
-                "source": "https://github.com/quarks-tech/protoevent-php/tree/PAY-4500"
+                "source": "https://github.com/quarks-tech/protoevent-php/tree/0.1.0"
             },
-            "time": "2024-03-07T10:52:53+00:00"
+            "time": "2024-03-13T15:25:19+00:00"
         },
         {
             "name": "ramsey/collection",
@@ -1232,6 +1231,56 @@
                 }
             ],
             "time": "2023-03-09T06:34:10+00:00"
+        },
+        {
+            "name": "psr/event-dispatcher",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/event-dispatcher.git",
+                "reference": "dbefd12671e8a14ec7f180cab83036ed26714bb0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/event-dispatcher/zipball/dbefd12671e8a14ec7f180cab83036ed26714bb0",
+                "reference": "dbefd12671e8a14ec7f180cab83036ed26714bb0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\EventDispatcher\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Standard interfaces for event handling.",
+            "keywords": [
+                "events",
+                "psr",
+                "psr-14"
+            ],
+            "support": {
+                "issues": "https://github.com/php-fig/event-dispatcher/issues",
+                "source": "https://github.com/php-fig/event-dispatcher/tree/1.0.0"
+            },
+            "time": "2019-01-08T18:20:26+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -2198,6 +2247,162 @@
             "time": "2020-09-28T06:39:44+00:00"
         },
         {
+            "name": "symfony/event-dispatcher",
+            "version": "v7.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/event-dispatcher.git",
+                "reference": "834c28d533dd0636f910909d01b9ff45cc094b5e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/834c28d533dd0636f910909d01b9ff45cc094b5e",
+                "reference": "834c28d533dd0636f910909d01b9ff45cc094b5e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/event-dispatcher-contracts": "^2.5|^3"
+            },
+            "conflict": {
+                "symfony/dependency-injection": "<6.4",
+                "symfony/service-contracts": "<2.5"
+            },
+            "provide": {
+                "psr/event-dispatcher-implementation": "1.0",
+                "symfony/event-dispatcher-implementation": "2.0|3.0"
+            },
+            "require-dev": {
+                "psr/log": "^1|^2|^3",
+                "symfony/config": "^6.4|^7.0",
+                "symfony/dependency-injection": "^6.4|^7.0",
+                "symfony/error-handler": "^6.4|^7.0",
+                "symfony/expression-language": "^6.4|^7.0",
+                "symfony/http-foundation": "^6.4|^7.0",
+                "symfony/service-contracts": "^2.5|^3",
+                "symfony/stopwatch": "^6.4|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\EventDispatcher\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides tools that allow your application components to communicate with each other by dispatching events and listening to them",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/event-dispatcher/tree/v7.0.3"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-01-23T15:02:46+00:00"
+        },
+        {
+            "name": "symfony/event-dispatcher-contracts",
+            "version": "v3.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/event-dispatcher-contracts.git",
+                "reference": "a76aed96a42d2b521153fb382d418e30d18b59df"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher-contracts/zipball/a76aed96a42d2b521153fb382d418e30d18b59df",
+                "reference": "a76aed96a42d2b521153fb382d418e30d18b59df",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "psr/event-dispatcher": "^1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "3.4-dev"
+                },
+                "thanks": {
+                    "name": "symfony/contracts",
+                    "url": "https://github.com/symfony/contracts"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Contracts\\EventDispatcher\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Generic abstractions related to dispatching event",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "abstractions",
+                "contracts",
+                "decoupling",
+                "interfaces",
+                "interoperability",
+                "standards"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/event-dispatcher-contracts/tree/v3.4.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2023-05-23T14:45:45+00:00"
+        },
+        {
             "name": "theseer/tokenizer",
             "version": "1.2.1",
             "source": {
@@ -2250,14 +2455,14 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "quarks-tech/protoevent-php": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": ">=8",
-        "ext-amqp": "*"
+        "ext-pcntl": "*",
+        "ext-amqp": "1.11.0",
+        "ext-bcmath": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
