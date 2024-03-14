@@ -7,5 +7,5 @@ return [
         'vhost' => '/',
         'login' => 'guest',
         'password' => 'guest',
-    ]
+    ],
 ];
