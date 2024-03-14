@@ -2,7 +2,7 @@
 
 return [
     'rabbitmq' => [
-        'host' => 'host.docker.internal',
+        'host' => getenv('DOCKER_INTERNAL_HOST'),
         'port' => '5672',
         'vhost' => '/',
         'login' => 'guest',
