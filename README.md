@@ -24,7 +24,7 @@
 4. **Create rabbitmq exchange `example.books.v1`**
 
 
-5. **Start the receiver**: The receiver will create the `excample.consumers.v1` queue, bind itself to the `BookCreatedEvent`, and start listening to events to process them.
+5. **Start the receiver**: The receiver will create the `example.consumers.v1` queue, bind itself to the `BookCreatedEvent`, and start listening to events to process them.
     ```bash
     make consume
     ```
