@@ -14,14 +14,12 @@ class AMQPTransport implements TransportInterface, BlockingTransportInterface
     public const MARKER_AMQP_DELIVERY_TAG = 'amqp_delivery_tag';
     public const MAX_RETRIES = 3;
     public const DEFAULT_MAX_RETRIES = 3;
-    public const DEFAULT_PREFETCH_COUNT = 3;
     public const DEFAULT_MIN_RETRY_BACKOFF = 15000;
 
     private array $receiverOptions = [
         'queue' => '',
         'setupTopology' => false,
         'setupBindings' => false,
-        'prefetchCount' => self::DEFAULT_PREFETCH_COUNT,
         'maxRetries' => self::DEFAULT_MAX_RETRIES,
         'minRetryBackoff' => self::DEFAULT_MIN_RETRY_BACKOFF,
     ];

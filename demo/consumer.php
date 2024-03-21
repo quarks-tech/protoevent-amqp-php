@@ -22,6 +22,7 @@ $eventDispatcher = new EventDispatcher();
 
 $dispatcher = new Dispatcher(new SymfonyEventDispatcherAdapter($eventDispatcher));
 $connection = new AMQPConnection($config['rabbitmq']);
+$connection->setQualityOfService(0, 10);
 
 $amqpTransport = new AMQPTransport($connection, new Encoder(), [
     'queue' => 'example.consumers.v1',

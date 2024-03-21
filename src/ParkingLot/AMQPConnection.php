@@ -21,6 +21,7 @@ class AMQPConnection
 
     /** @var array<\AMQPQueue> */
     private array $queues = [];
+    private array $qualityOfService = [];
 
     public function __construct(private array $connectionOptions)
     {
@@ -189,10 +190,27 @@ class AMQPConnection
         return $this->queues[$queueName];
     }
 
+    public function setQualityOfService(int $size, int $count)
+    {
+        $this->qualityOfService['size'] = $size;
+        $this->qualityOfService['count'] = $count;
+
+        return $this;
+    }
+
+    public function getConnection(): \AMQPConnection
+    {
+        return $this->connection;
+    }
+
+    public function getChannel(): \AMQPChannel
+    {
+        return $this->channel;
+    }
+
     private function connect(): void
     {
         if (
-            $this->channel !== null &&
             $this->connection !== null &&
             $this->connection->isConnected()
         ) {
@@ -204,5 +222,9 @@ class AMQPConnection
         $this->connection->pconnect();
 
         $this->channel = new \AMQPChannel($this->connection);
+
+        if ($this->qualityOfService) {
+            $this->channel->qos($this->qualityOfService['size'], $this->qualityOfService['count']);
+        }
     }
 }

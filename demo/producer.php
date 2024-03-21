@@ -13,6 +13,8 @@ require '../vendor/autoload.php';
 
 $config = include 'config.php';
 $connection = new AMQPConnection($config['rabbitmq']);
+$connection->setQualityOfService(0, 10);
+
 $amqpTransport = new AMQPTransport($connection, new Encoder(), [
     'queue' => 'example.consumers.v1',
     'setupTopology' => true,
