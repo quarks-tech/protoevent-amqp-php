@@ -8,6 +8,7 @@ use Example\Books\V1\EventBus\Receiver\Receiver as BooksV1Receiver;
 use Quarks\EventBus\BlockingReceiver;
 use Quarks\EventBus\Dispatcher\Adapter\SymfonyEventDispatcherAdapter;
 use Quarks\EventBus\Dispatcher\Dispatcher;
+use Quarks\EventBus\Transport\Encoding\Encoder;
 use Quarks\EventBus\Transport\ParkingLot\AMQPTransport;
 use Quarks\EventBus\Transport\ParkingLot\AMQPConnection;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -22,7 +23,7 @@ $eventDispatcher = new EventDispatcher();
 $dispatcher = new Dispatcher(new SymfonyEventDispatcherAdapter($eventDispatcher));
 $connection = new AMQPConnection($config['rabbitmq']);
 
-$amqpTransport = new AMQPTransport($connection, [
+$amqpTransport = new AMQPTransport($connection, new Encoder(), [
     'queue' => 'example.consumers.v1',
     'setupTopology' => true,
     'setupBindings' => true,

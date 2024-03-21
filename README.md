@@ -26,9 +26,9 @@
 
 5. **Start the receiver**: The receiver will create the `example.consumers.v1` queue, bind itself to the `BookCreatedEvent`, and start listening to events to process them.
     ```bash
-    make consume
+    make demo-consume
     ```
 6. **Publish an event**: The `BookCreatedEvent` will be published on to `example.books.v1` exchange
     ```bash
-    make publish
+    make demo-publish
     ```

@@ -13,7 +13,7 @@ class AMQPConnection
     public const WAIT_ROUTING_KEY = 'wait';
     public const PARKING_LOT_ROUTING_KEY = 'parkinglot';
 
-    private \AMQPConnection $connection;
+    private ?\AMQPConnection $connection = null;
     private ?\AMQPChannel $channel = null;
 
     /** @var array<\AMQPExchange> */
@@ -22,13 +22,11 @@ class AMQPConnection
     /** @var array<\AMQPQueue> */
     private array $queues = [];
 
-    public function __construct(array $connectionOptions)
+    public function __construct(private array $connectionOptions)
     {
         if (!\extension_loaded('amqp')) {
             throw new \LogicException(sprintf('You cannot use the "%s" as the "amqp" extension is not installed.', __CLASS__));
         }
-
-        $this->connection = new \AMQPConnection($connectionOptions);
     }
 
     /**
@@ -37,8 +35,10 @@ class AMQPConnection
      * @throws \AMQPConnectionException
      * @throws \AMQPException
      */
-    public function publish(AMQPMessage $message, string $exchange, string $routingKey, int $delayInMs = 0): void
+    public function publish(AMQPMessage $message, string $exchange, string $routingKey): void
     {
+        $this->connect();
+
         $this->exchange($exchange)->publish(
             $message->getBody(),
             $routingKey,
@@ -56,11 +56,11 @@ class AMQPConnection
      */
     public function setup(array $registeredEvents, string $queueName, array $receiverOptions): void
     {
-        if ($receiverOptions['setupTopology']) {
+        if ($receiverOptions['setupTopology'] === true) {
             $this->setupTopology($queueName, $receiverOptions['minRetryBackoff']);
         }
 
-        if ($receiverOptions['setupBindings']) {
+        if ($receiverOptions['setupBindings'] === true) {
             $this->setupBindings($registeredEvents, $queueName);
         }
     }
@@ -155,13 +155,15 @@ class AMQPConnection
      * @throws \AMQPException
      * @throws \AMQPConnectionException
      */
-    private function exchange(string $name, string $type = AMQP_EX_TYPE_FANOUT): \AMQPExchange
+    private function exchange(string $name, string $type = AMQP_EX_TYPE_FANOUT, int $flags = \AMQP_DURABLE): \AMQPExchange
     {
         if (!isset($this->exchanges[$name])) {
-            $exchange = new \AMQPExchange($this->channel());
+            $this->connect();
+
+            $exchange = new \AMQPExchange($this->channel);
             $exchange->setName($name);
             $exchange->setType($type);
-            $exchange->setFlags(\AMQP_DURABLE);
+            $exchange->setFlags($flags);
 
             $this->exchanges[$name] = $exchange;
         }
@@ -174,12 +176,14 @@ class AMQPConnection
      * @throws \AMQPQueueException
      * @throws \AMQPConnectionException
      */
-    private function queue(string $queueName, array $arguments = []): \AMQPQueue
+    private function queue(string $queueName, array $arguments = [], int $flags = \AMQP_DURABLE): \AMQPQueue
     {
         if (!isset($this->queues[$queueName])) {
-            $amqpQueue = new \AMQPQueue($this->channel());
+            $this->connect();
+
+            $amqpQueue = new \AMQPQueue($this->channel);
             $amqpQueue->setName($queueName);
-            $amqpQueue->setFlags(\AMQP_DURABLE);
+            $amqpQueue->setFlags($flags);
             $amqpQueue->setArguments($arguments);
 
             $this->queues[$queueName] = $amqpQueue;
@@ -188,15 +192,13 @@ class AMQPConnection
         return $this->queues[$queueName];
     }
 
-    /**
-     * @throws \AMQPException
-     * @throws \AMQPConnectionException
-     */
-    private function channel(): \AMQPChannel
+    private function connect(): void
     {
-        if (null !== $this->channel) {
-            return $this->channel;
+        if (null !== $this->connection && $this->connection->isConnected()) {
+            return;
         }
+
+        $this->connection = new \AMQPConnection($this->connectionOptions);
 
         try {
             $this->connection->pconnect();
@@ -206,6 +208,8 @@ class AMQPConnection
 
         $this->channel = new \AMQPChannel($this->connection);
 
-        return $this->channel;
+        if ($count = $this->connectionOptions['prefetchCount']) {
+            $this->channel->qos(0, $count);
+        }
     }
 }

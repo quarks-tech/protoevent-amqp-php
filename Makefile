@@ -13,10 +13,10 @@ install-builder:
 	docker build -t $(BUILDER_IMAGE_TAG) $(BUILDER_IMAGE)
 
 .PHONY: consume
-consume:
+demo-consume:
 	docker run --rm -v $(PWD):$(APPLICATION_PATH) -e 'DOCKER_INTERNAL_HOST=$(DOCKER_INTERNAL_HOST)' $(BUILDER_IMAGE_TAG) sh -c 'cd demo && php consumer.php'
 
 .PHONY: publish
-publish:
+demo-publish:
 	docker run --rm -v $(PWD):$(APPLICATION_PATH) -e 'DOCKER_INTERNAL_HOST=$(DOCKER_INTERNAL_HOST)' $(BUILDER_IMAGE_TAG) sh -c 'cd demo && php producer.php'
 

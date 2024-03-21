@@ -6,32 +6,32 @@ use Quarks\EventBus\Envelope;
 use Quarks\EventBus\Exception\MessageEncodingFailedException;
 use Quarks\EventBus\Exception\TransportException;
 use Quarks\EventBus\Transport\BlockingTransportInterface;
-use Quarks\EventBus\Transport\Encoding\Encoder;
+use Quarks\EventBus\Transport\Encoding\EncoderInterface;
 use Quarks\EventBus\Transport\TransportInterface;
 
 class AMQPTransport implements TransportInterface, BlockingTransportInterface
 {
     public const MARKER_AMQP_DELIVERY_TAG = 'amqp_delivery_tag';
     public const MAX_RETRIES = 3;
-
-    private AMQPConnection $connection;
-    private Encoder $encoder;
+    public const DEFAULT_MAX_RETRIES = 3;
+    public const DEFAULT_PREFETCH_COUNT = 3;
+    public const DEFAULT_MIN_RETRY_BACKOFF = 15000;
 
     private array $receiverOptions = [
         'queue' => '',
         'setupTopology' => false,
         'setupBindings' => false,
-        'prefetchCount' => 3,
-        'maxRetries' => 3,
-        'minRetryBackoff' => 15000,
+        'prefetchCount' => self::DEFAULT_PREFETCH_COUNT,
+        'maxRetries' => self::DEFAULT_MAX_RETRIES,
+        'minRetryBackoff' => self::DEFAULT_MIN_RETRY_BACKOFF,
     ];
 
-    public function __construct(AMQPConnection $connection, array $receiverOptions)
-    {
-        $this->connection = $connection;
+    public function __construct(
+        private AMQPConnection $connection,
+        private EncoderInterface $encoder,
+        array $receiverOptions
+    ){
         $this->receiverOptions = array_replace_recursive($this->receiverOptions, $receiverOptions);
-
-        $this->encoder = new Encoder();
     }
 
     /**

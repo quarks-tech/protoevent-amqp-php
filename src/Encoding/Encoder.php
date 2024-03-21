@@ -7,7 +7,7 @@ use Quarks\EventBus\Envelope;
 use Quarks\EventBus\Exception\MessageEncodingFailedException;
 use Quarks\EventBus\Transport\AMQPMessage;
 
-class Encoder
+class Encoder implements EncoderInterface
 {
     private BinaryEncoder $binaryEncoder;
     private StructuredEncoder $structuredEncoder;
