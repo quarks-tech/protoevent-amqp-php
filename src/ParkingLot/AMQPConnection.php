@@ -37,8 +37,6 @@ class AMQPConnection
      */
     public function publish(AMQPMessage $message, string $exchange, string $routingKey): void
     {
-        $this->connect();
-
         $this->exchange($exchange)->publish(
             $message->getBody(),
             $routingKey,
@@ -64,7 +62,6 @@ class AMQPConnection
             $this->setupBindings($registeredEvents, $queueName);
         }
     }
-
 
     private function setupBindings(array $registeredEvents, string $incomingQueue): void
     {
@@ -157,9 +154,9 @@ class AMQPConnection
      */
     private function exchange(string $name, string $type = AMQP_EX_TYPE_FANOUT, int $flags = \AMQP_DURABLE): \AMQPExchange
     {
-        if (!isset($this->exchanges[$name])) {
-            $this->connect();
+        $this->connect();
 
+        if (!isset($this->exchanges[$name])) {
             $exchange = new \AMQPExchange($this->channel);
             $exchange->setName($name);
             $exchange->setType($type);
@@ -178,9 +175,9 @@ class AMQPConnection
      */
     private function queue(string $queueName, array $arguments = [], int $flags = \AMQP_DURABLE): \AMQPQueue
     {
-        if (!isset($this->queues[$queueName])) {
-            $this->connect();
+        $this->connect();
 
+        if (!isset($this->queues[$queueName])) {
             $amqpQueue = new \AMQPQueue($this->channel);
             $amqpQueue->setName($queueName);
             $amqpQueue->setFlags($flags);
@@ -194,22 +191,18 @@ class AMQPConnection
 
     private function connect(): void
     {
-        if (null !== $this->connection && $this->connection->isConnected()) {
+        if (
+            $this->channel !== null &&
+            $this->connection !== null &&
+            $this->connection->isConnected()
+        ) {
             return;
         }
 
         $this->connection = new \AMQPConnection($this->connectionOptions);
 
-        try {
-            $this->connection->pconnect();
-        } catch (\AMQPConnectionException $e) {
-            throw new \AMQPException('Could not connect to the AMQP server.', 0, $e);
-        }
+        $this->connection->pconnect();
 
         $this->channel = new \AMQPChannel($this->connection);
-
-        if ($count = $this->connectionOptions['prefetchCount']) {
-            $this->channel->qos(0, $count);
-        }
     }
 }
