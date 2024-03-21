@@ -164,7 +164,7 @@ class AMQPConnection
      * @throws \AMQPException
      * @throws \AMQPConnectionException
      */
-    public function ack(string $queue,string $deliveryTag): bool
+    public function ack(string $queue, string $deliveryTag): bool
     {
         return $this->queue($queue)->ack($deliveryTag);
     }
